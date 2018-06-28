@@ -84,23 +84,28 @@ public class MqttMessageHelper {
                             influxDbService.createDB(deviceName);
                             influxDbService.setRetentionPolicy(deviceName, InfluxDbService.MAX_KEEP_DAYS);
                         }
-                        BatchPoints batchPoints = BatchPoints
-                                .database(deviceName)
-                                //.tag("async", "true")
-                                //.retentionPolicy(rpName)
-                                .consistency(InfluxDB.ConsistencyLevel.ALL)
-                                .build();
-                        Point point1 = Point.measurement(deviceName)
-                                .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
-                                //.addField("name", dataModel.getName())
-                                //.addField("name", dataModel.getName())
-                                .addField(dataModel.getName(), dataModel.getValue())
-                                .build();
-                        batchPoints.point(point1);
-                        influxDbService.getInfluxDB().write(batchPoints);
+                        try {
+                            Double value = Double.valueOf(dataModel.getValue());
+                            BatchPoints batchPoints = BatchPoints
+                                    .database(deviceName)
+                                    //.tag("async", "true")
+                                    //.retentionPolicy(rpName)
+                                    .consistency(InfluxDB.ConsistencyLevel.ALL)
+                                    .build();
+                            Point point1 = Point.measurement(deviceName)
+                                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                                    //.addField("name", dataModel.getName())
+                                    //.addField("name", dataModel.getName())
+                                    .addField(dataModel.getName(), value)
+                                    .build();
+                            batchPoints.point(point1);
+                            influxDbService.getInfluxDB().write(batchPoints);
+                        } catch (NumberFormatException e) {
+                            logger.warn("Value format is NOT supported!");
+                        }
                     }
                 } else {
-                    logger.warn("Date id invalid!");
+                    logger.warn("Data is invalid!");
                 }
                 logger.info("Topic:" + topic + " || Payload:" + payload);
             } else {

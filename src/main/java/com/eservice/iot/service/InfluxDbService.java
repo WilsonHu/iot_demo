@@ -85,7 +85,7 @@ public class InfluxDbService implements CommandLineRunner {
 
     public void setRetentionPolicy(String dbName, Integer keepDays) {
         InfluxDB influxDB = getInfluxDB();
-        influxDB.createRetentionPolicy("aRetentionPolicy", dbName, keepDays + "d", "30m", 2, true);
+        influxDB.createRetentionPolicy("aRetentionPolicy", dbName, keepDays + "d", "1d", 2, true);
     }
 
     public void closeDB() {

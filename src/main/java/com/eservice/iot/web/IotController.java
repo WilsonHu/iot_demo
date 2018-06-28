@@ -40,8 +40,9 @@ public class IotController {
         if(tag.equals("")) {
             return ResultGenerator.genFailResult("Tag should NOT be empty!");
         }
-        //query interval should be end with "m" or "d"
-        if(interval.equals("") || (!interval.endsWith("d") && !interval.endsWith("m"))) {
+        //query interval should be end with "m" , "h" or "d"
+        boolean intervalInvalid = interval.equals("") || (!interval.endsWith("d") && !interval.endsWith("h") && !interval.endsWith("m"));
+        if(intervalInvalid) {
             return ResultGenerator.genFailResult("Query interval should NOT be empty or with error format!");
         }
         try {
